@@ -1,0 +1,26 @@
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: gymfitness-sqlserver
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: "Express"
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD:?Define MSSQL_SA_PASSWORD antes de iniciar Docker}
+    ports:
+      - "1433:1433"
+    volumes:
+      - gymfitness-data:/var/opt/mssql
+  app:
+    build: .
+    depends_on:
+      - sqlserver
+    environment:
+      DB_URL: jdbc:sqlserver://sqlserver:1433;databaseName=gymfitnessdb;encrypt=false;trustServerCertificate=true
+      DB_USER: sa
+      DB_PASSWORD: ${MSSQL_SA_PASSWORD:?Define MSSQL_SA_PASSWORD antes de iniciar Docker}
+      APP_ADMIN_PASSWORD: ${APP_ADMIN_PASSWORD:-Admin123!}
+      APP_RECEPTION_PASSWORD: ${APP_RECEPTION_PASSWORD:-Recepcion123!}
+    ports:
+      - "8080:8080"
+volumes:
+  gymfitness-data:
