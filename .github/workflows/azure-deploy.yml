@@ -8,6 +8,9 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    env:
+      AZURE_WEBAPP_NAME: ${{ secrets.AZURE_WEBAPP_NAME }}
+      AZURE_WEBAPP_PUBLISH_PROFILE: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -20,8 +23,9 @@ jobs:
       - name: Build
         run: mvn -B clean package -DskipTests
       - name: Deploy to Azure Web App
+        if: ${{ env.AZURE_WEBAPP_NAME != '' && env.AZURE_WEBAPP_PUBLISH_PROFILE != '' }}
         uses: azure/webapps-deploy@v3
         with:
-          app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ env.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: target/gym-fitness-center-1.0.0.jar
