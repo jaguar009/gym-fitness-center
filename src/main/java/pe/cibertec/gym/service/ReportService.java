@@ -6,6 +6,7 @@ import pe.cibertec.gym.repository.MemberRepository;
 import pe.cibertec.gym.repository.PaymentRepository;
 import pe.cibertec.gym.report.MemberReportRow;
 import pe.cibertec.gym.report.PaymentReportRow;
+import pe.cibertec.gym.report.SummaryReportRow;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperExportManager;
@@ -22,6 +23,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 @Service
 public class ReportService {
@@ -40,16 +42,28 @@ public class ReportService {
         Map<String, Object> params = new HashMap<>();
         params.put("REPORT_TITLE", "Reporte de miembros");
         params.put("FILTER_TEXT", "Búsqueda: " + display(query) + " | Estado: " + display(status));
+        Map<String, BigDecimal> summary = new TreeMap<>();
+        rows.forEach(row -> summary.merge(row.getEstado(), BigDecimal.ONE, BigDecimal::add));
+        params.put("SUMMARY_DATASET", summaryData(summary));
+        params.put("SUMMARY_TEXT", "Total de miembros en el resultado: " + rows.size());
         return export("jasper/member_report.jrxml", params, rows);
     }
 
     @Transactional(readOnly = true)
     public byte[] paymentReport(LocalDate from, LocalDate to, String method) {
+        if (from == null || to == null || to.isBefore(from)) {
+            throw new IllegalArgumentException("Ingrese un periodo válido para el reporte");
+        }
         List<PaymentReportRow> rows = paymentRepository.search(from, to, normalize(method)).stream()
                 .map(this::paymentRow).toList();
         Map<String, Object> params = new HashMap<>();
         params.put("REPORT_TITLE", "Reporte de pagos");
         params.put("FILTER_TEXT", "Periodo: " + from + " a " + to + " | Método: " + display(method));
+        Map<String, BigDecimal> summary = new TreeMap<>();
+        rows.forEach(row -> summary.merge(row.getMetodo() == null ? "SIN MÉTODO" : row.getMetodo(), row.getMonto(), BigDecimal::add));
+        params.put("SUMMARY_DATASET", summaryData(summary));
+        params.put("SUMMARY_TEXT", "Pagos: " + rows.size() + " | Total S/ " + rows.stream()
+                .map(PaymentReportRow::getMonto).reduce(BigDecimal.ZERO, BigDecimal::add));
         return export("jasper/payment_report.jrxml", params, rows);
     }
 
@@ -61,6 +75,11 @@ public class ReportService {
         } catch (Exception ex) {
             throw new IllegalStateException("No se pudo generar el reporte", ex);
         }
+    }
+
+    private JRBeanCollectionDataSource summaryData(Map<String, BigDecimal> summary) {
+        return new JRBeanCollectionDataSource(summary.entrySet().stream()
+                .map(entry -> new SummaryReportRow(entry.getKey(), entry.getValue())).toList());
     }
 
     private MemberReportRow memberRow(Member m) {

@@ -23,9 +23,10 @@ class EnrollmentServiceTest {
         var gymClass = new GymClass();
         gymClass.setCupos(10);
         var member = new Member();
-        when(classRepository.findById(1L)).thenReturn(Optional.of(gymClass));
+        when(classRepository.findByIdForUpdate(1L)).thenReturn(Optional.of(gymClass));
         when(memberRepository.findById(1L)).thenReturn(Optional.of(member));
-        when(enrollmentRepository.existsByGymClassIdAndMemberId(1L, 1L)).thenReturn(true);
+        member.setId(1L);
+        when(enrollmentRepository.findByGymClassIdOrderByFechaInscripcionDescIdDesc(1L)).thenReturn(java.util.List.of(new pe.cibertec.gym.model.ClassEnrollment(gymClass, member)));
 
         assertThrows(IllegalStateException.class, () -> new EnrollmentService(enrollmentRepository, classRepository, memberRepository).enroll(1L, 1L));
         verify(enrollmentRepository, never()).save(any());

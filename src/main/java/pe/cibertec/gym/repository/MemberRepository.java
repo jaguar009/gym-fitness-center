@@ -8,6 +8,8 @@ import java.util.List;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
     long countByEstado(String estado);
+    boolean existsByDni(String dni);
+    boolean existsByDniAndIdNot(String dni, Long id);
 
     @Query("""
             select m from Member m

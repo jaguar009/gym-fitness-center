@@ -1,6 +1,7 @@
 package pe.cibertec.gym.model;
 
 import jakarta.persistence.Column;
+import jakarta.validation.constraints.*;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -15,15 +16,26 @@ public class Employee {
     @Column(name = "idEmpleado")
     private Long id;
     @Column(name = "dni", nullable = false, unique = true, length = 15)
+    @Pattern(regexp="[0-9]{8}", message="El DNI debe tener ocho dígitos")
+    @NotBlank
     private String dni;
     @Column(name = "nombres", nullable = false, length = 100)
+    @NotBlank
+    @Size(max=100)
     private String nombres;
     @Column(name = "apellidos", nullable = false, length = 100)
+    @NotBlank
+    @Size(max=100)
     private String apellidos;
+    @Size(max=50)
     private String cargo;
+    @Size(max=20)
     private String telefono;
+    @Email
+    @Size(max=100)
     private String correo;
     @Column(name = "estado", nullable = false, length = 20)
+    @Pattern(regexp="ACTIVO|INACTIVO")
     private String estado = "ACTIVO";
 
     public Employee() { }

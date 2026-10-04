@@ -1,14 +1,7 @@
 target/
 .idea/
 *.iml
-.classpath
-.project
-.settings/
 *.log
+logs/
 .env
 application-local.properties
-.env.*
-!.env.example
-.vscode/
-*.class
-hs_err_pid*

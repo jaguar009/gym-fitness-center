@@ -1,6 +1,7 @@
 package pe.cibertec.gym.model;
 
 import jakarta.persistence.Column;
+import jakarta.validation.constraints.*;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -23,14 +24,22 @@ public class Membership {
     @JoinColumn(name = "idMiembro", nullable = false)
     private Member member;
     @Column(name = "tipo", nullable = false, length = 50)
+    @NotBlank
+    @Size(max=50)
     private String tipo;
     @Column(name = "costo", nullable = false, precision = 10, scale = 2)
+    @NotNull
+    @DecimalMin(value="0.01", message="El costo debe ser mayor que cero")
+    @Digits(integer=8, fraction=2)
     private BigDecimal costo;
     @Column(name = "fechaInicio")
+    @NotNull
     private LocalDate fechaInicio;
     @Column(name = "fechaFin")
+    @NotNull
     private LocalDate fechaFin;
     @Column(name = "estado", nullable = false, length = 20)
+    @Pattern(regexp="ACTIVO|INACTIVO|VENCIDO")
     private String estado = "ACTIVO";
 
     public Membership() { }

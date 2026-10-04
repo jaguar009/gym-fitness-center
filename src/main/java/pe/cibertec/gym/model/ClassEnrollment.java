@@ -40,4 +40,5 @@ public class ClassEnrollment {
     public Member getMember() { return member; }
     public LocalDate getFechaInscripcion() { return fechaInscripcion; }
     public String getEstado() { return estado; }
+    public void setEstado(String estado) { this.estado = estado; }
 }

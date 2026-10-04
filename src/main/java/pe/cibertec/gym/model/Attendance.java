@@ -1,6 +1,7 @@
 package pe.cibertec.gym.model;
 
 import jakarta.persistence.Column;
+import jakarta.validation.constraints.*;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -22,10 +23,13 @@ public class Attendance {
     @JoinColumn(name = "idMiembro", nullable = false)
     private Member member;
     @Column(name = "fecha", nullable = false)
+    @NotNull
     private LocalDate fecha;
     @Column(name = "horaEntrada")
+    @Pattern(regexp="^$|([01][0-9]|2[0-3]):[0-5][0-9]", message="Use una hora válida: HH:mm")
     private String horaEntrada;
     @Column(name = "observacion")
+    @Size(max=150)
     private String observacion;
 
     public Attendance() { }

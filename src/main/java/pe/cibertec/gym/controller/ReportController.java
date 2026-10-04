@@ -54,6 +54,7 @@ public class ReportController {
                            @RequestParam(required = false) String method, Model model) {
         LocalDate start = from == null ? LocalDate.now().withDayOfMonth(1) : from;
         LocalDate end = to == null ? LocalDate.now() : to;
+        if (end.isBefore(start)) throw new IllegalArgumentException("La fecha final debe ser posterior a la inicial");
         model.addAttribute("rows", paymentRepository.search(start, end, normalize(method)));
         model.addAttribute("from", start);
         model.addAttribute("to", end);
