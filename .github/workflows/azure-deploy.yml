@@ -3,7 +3,12 @@ name: Build and deploy Gym Fitness Center
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
   build-and-deploy:
@@ -22,10 +27,18 @@ jobs:
           cache: maven
       - name: Build
         run: mvn -B clean package -DskipTests
+      - name: Save executable artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: gym-fitness-center-java21
+          path: target/gym-fitness-center-1.0.0.jar
       - name: Deploy to Azure Web App
-        if: ${{ env.AZURE_WEBAPP_NAME != '' && env.AZURE_WEBAPP_PUBLISH_PROFILE != '' }}
+        if: ${{ github.event_name != 'pull_request' && env.AZURE_WEBAPP_NAME != '' && env.AZURE_WEBAPP_PUBLISH_PROFILE != '' }}
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ env.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: target/gym-fitness-center-1.0.0.jar
+      - name: Explain pending Azure configuration
+        if: ${{ env.AZURE_WEBAPP_NAME == '' || env.AZURE_WEBAPP_PUBLISH_PROFILE == '' }}
+        run: echo '### Azure pendiente; se generó el JAR. Configure los secretos AZURE_WEBAPP_NAME y AZURE_WEBAPP_PUBLISH_PROFILE para desplegar.' >> "$GITHUB_STEP_SUMMARY"

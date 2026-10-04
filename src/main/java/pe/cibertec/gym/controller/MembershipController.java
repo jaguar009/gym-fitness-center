@@ -1,61 +1,31 @@
 package pe.cibertec.gym.controller;
-
-import pe.cibertec.gym.model.Membership;
-import pe.cibertec.gym.repository.MemberRepository;
-import pe.cibertec.gym.repository.MembershipRepository;
-import org.springframework.security.access.prepost.PreAuthorize;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import pe.cibertec.gym.model.*;
+import pe.cibertec.gym.repository.*;
 
-@Controller
-@RequestMapping("/memberships")
+@Controller @RequestMapping("/memberships")
 public class MembershipController {
-    private final MembershipRepository repository;
-    private final MemberRepository memberRepository;
-
-    public MembershipController(MembershipRepository repository, MemberRepository memberRepository) {
-        this.repository = repository;
-        this.memberRepository = memberRepository;
+    private final MembershipRepository repository; private final MemberRepository members;
+    public MembershipController(MembershipRepository repository,MemberRepository members) {this.repository=repository;this.members=members;}
+    @InitBinder("membership") public void binding(org.springframework.web.bind.WebDataBinder binder) {binder.setAllowedFields("id","tipo","costo","fechaInicio","fechaFin","estado");}
+    @GetMapping public String list(Model model) { model.addAttribute("memberships",repository.findAllByOrderByFechaFinAsc()); return "memberships/list"; }
+    @GetMapping("/new") public String form(Model model) { model.addAttribute("membership",new Membership()); model.addAttribute("members",members.findAll()); return "memberships/form";}
+    @GetMapping("/{id}/edit") public String edit(@PathVariable Long id,Model model) {model.addAttribute("membership",repository.findById(id).orElseThrow());model.addAttribute("members",members.findAll());return "memberships/form";}
+    @PostMapping public String save(@Valid @ModelAttribute("membership") Membership item,BindingResult result,@RequestParam(required=false) Long memberId,Model model,RedirectAttributes flash) {
+        var member=memberId==null?java.util.Optional.<Member>empty():members.findById(memberId);
+        if(member.isEmpty()) result.reject("miembro","Seleccione un miembro existente");
+        if(item.getFechaInicio()!=null && item.getFechaFin()!=null && item.getFechaFin().isBefore(item.getFechaInicio())) result.rejectValue("fechaFin","rango","La fecha final debe ser posterior a la inicial");
+        model.addAttribute("members",members.findAll()); model.addAttribute("selectedMemberId",memberId);
+        if(result.hasErrors()) return "memberships/form";
+        if(item.getId()!=null && !repository.existsById(item.getId())) throw new IllegalArgumentException("El registro no existe");
+        item.setMember(member.orElseThrow());repository.save(item);flash.addFlashAttribute("success","Datos guardados correctamente");return "redirect:/memberships";
     }
-
-    @GetMapping
-    public String list(Model model) {
-        model.addAttribute("memberships", repository.findAllByOrderByFechaFinAsc());
-        return "memberships/list";
-    }
-
-    @GetMapping("/new")
-    @PreAuthorize("hasAnyRole('ADMIN','RECEPCION')")
-    public String form(Model model) {
-        model.addAttribute("membership", new Membership());
-        model.addAttribute("members", memberRepository.findAll());
-        return "memberships/form";
-    }
-
-    @PostMapping
-    @PreAuthorize("hasAnyRole('ADMIN','RECEPCION')")
-    public String save(Membership membership, Long memberId) {
-        membership.setMember(memberRepository.findById(memberId).orElseThrow());
-        repository.save(membership);
-        return "redirect:/memberships";
-    }
-
-    @GetMapping("/{id}/edit")
-    @PreAuthorize("hasAnyRole('ADMIN','RECEPCION')")
-    public String edit(@PathVariable Long id, Model model) {
-        model.addAttribute("membership", repository.findById(id).orElseThrow());
-        model.addAttribute("members", memberRepository.findAll());
-        return "memberships/form";
-    }
-
-    @PostMapping("/{id}/delete")
-    @PreAuthorize("hasRole('ADMIN')")
-    public String delete(@PathVariable Long id) {
-        repository.deleteById(id);
-        return "redirect:/memberships";
-    }
+    @PostMapping("/{id}/delete") @PreAuthorize("hasRole('ADMIN')")
+    public String delete(@PathVariable Long id,RedirectAttributes flash) { var item=repository.findById(id).orElseThrow(); item.setEstado("INACTIVO"); repository.save(item); flash.addFlashAttribute("success","Operación completada correctamente");return "redirect:/memberships";}
 }

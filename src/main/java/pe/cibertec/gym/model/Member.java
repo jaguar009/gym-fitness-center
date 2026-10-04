@@ -1,6 +1,7 @@
 package pe.cibertec.gym.model;
 
 import jakarta.persistence.Column;
+import jakarta.validation.constraints.*;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,22 +18,33 @@ public class Member {
     private Long id;
 
     @Column(nullable = false, unique = true, length = 15)
+    @Pattern(regexp="[0-9]{8}", message="El DNI debe tener ocho dígitos")
+    @NotBlank
     private String dni;
 
     @Column(nullable = false, length = 100)
+    @NotBlank
+    @Size(max=100)
     private String nombres;
 
     @Column(nullable = false, length = 100)
+    @NotBlank
+    @Size(max=100)
     private String apellidos;
 
+    @Size(max=20)
     private String telefono;
+    @Email(message="Ingrese un correo válido")
+    @Size(max=100)
     private String correo;
+    @Size(max=150)
     private String direccion;
 
     @Column(name = "fechaRegistro")
     private LocalDate registrationDate = LocalDate.now();
 
     @Column(nullable = false, length = 20)
+    @Pattern(regexp="ACTIVO|INACTIVO")
     private String estado = "ACTIVO";
 
     public Member() { }

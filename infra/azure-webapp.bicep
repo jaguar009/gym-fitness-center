@@ -27,7 +27,8 @@ resource webApp 'Microsoft.Web/sites@2023-12-01' = {
       alwaysOn: true
       appSettings: [
         { name: 'WEBSITES_PORT', value: '8080' }
-        { name: 'DDL_AUTO', value: 'update' }
+        { name: 'SPRING_PROFILES_ACTIVE', value: 'azure' }
+        { name: 'DDL_AUTO', value: 'validate' }
       ]
     }
   }

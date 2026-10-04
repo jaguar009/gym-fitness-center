@@ -5,7 +5,7 @@ services:
     environment:
       ACCEPT_EULA: "Y"
       MSSQL_PID: "Express"
-      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD:?Define MSSQL_SA_PASSWORD antes de iniciar Docker}
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD:-GymApp#2026!SqlServer}
     ports:
       - "1433:1433"
     volumes:
@@ -17,7 +17,7 @@ services:
     environment:
       DB_URL: jdbc:sqlserver://sqlserver:1433;databaseName=gymfitnessdb;encrypt=false;trustServerCertificate=true
       DB_USER: sa
-      DB_PASSWORD: ${MSSQL_SA_PASSWORD:?Define MSSQL_SA_PASSWORD antes de iniciar Docker}
+      DB_PASSWORD: ${MSSQL_SA_PASSWORD:-GymApp#2026!SqlServer}
       APP_ADMIN_PASSWORD: ${APP_ADMIN_PASSWORD:-Admin123!}
       APP_RECEPTION_PASSWORD: ${APP_RECEPTION_PASSWORD:-Recepcion123!}
     ports:
