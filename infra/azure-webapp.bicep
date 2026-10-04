@@ -36,10 +36,10 @@ resource webApp 'Microsoft.Web/sites@2023-12-01' = {
       minTlsVersion: '1.2'
       ftpsState: 'Disabled'
       appSettings: [
-        { name: 'WEBSITES_PORT', value: '8080' }
         { name: 'SPRING_PROFILES_ACTIVE', value: 'azure' }
         { name: 'DDL_AUTO', value: 'validate' }
         { name: 'JAVA_OPTS', value: '-Xms64m -Xmx384m -Djava.awt.headless=true' }
+        { name: 'WEBSITES_CONTAINER_START_TIME_LIMIT', value: '600' }
       ]
     }
   }

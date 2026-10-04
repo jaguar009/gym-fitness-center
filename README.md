@@ -59,6 +59,6 @@ EnrollmentService usa @Transactional y PESSIMISTIC_WRITE sobre la clase. Valida 
 
 Consultar `infra/GUIA_AZURE.md`. Ejecutar `sql/gymfitnessdb_azure.sql` sobre una Azure SQL Database ya creada. El perfil azure usa identidad administrada para SQL y contraseñas iniciales de aplicación externas. El workflow conserva el JAR y despliega con OIDC. Las plantillas proponen F1 y SQL con cuota gratuita y AutoPause.
 
-URL creada: https://gym-fitness-jaguar009-20261003.azurewebsites.net. El paquete de actualización Azure conserva el resultado de despliegue, logs y capturas de la ejecución observada.
+URL pública: https://gym-fitness-jaguar009-20261003.azurewebsites.net. El 04/10/2026 se observó el acceso ADMIN, el panel, ambas consultas y la descarga de los dos PDF con Azure SQL. El paquete conserva capturas reales, registros de arranque y la ejecución exitosa de Actions. Las credenciales Azure son privadas y diferentes de las cuentas de demostración locales; no están en este repositorio ni en el ZIP.
 
 Pendientes: validación funcional completa con ambos roles, concurrencia y rollback, grabación del demo de 3 a 5 minutos y confirmación de coordinación/aportes del equipo. Ver `REQUISITOS_CUMPLIMIENTO.md`.

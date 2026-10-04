@@ -43,3 +43,11 @@ resource sqlDatabase 'Microsoft.Sql/servers/databases@2023-08-01' = {
 
 output serverFqdn string = sqlServer.properties.fullyQualifiedDomainName
 output databaseId string = sqlDatabase.id
+
+resource connectionPolicy 'Microsoft.Sql/servers/connectionPolicies@2023-08-01' = {
+  parent: sqlServer
+  name: 'default'
+  properties: {
+    connectionType: 'Proxy'
+  }
+}
