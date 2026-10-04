@@ -7,7 +7,7 @@ Aplicación del curso Lenguaje de Programación II con Java 21, Spring Boot 3.4.
 1. Ejecución local conectada a SQL Server Express mediante autenticación de Windows; JAR y lanzador Eclipse incluidos.
 2. Seis mantenimientos con validación, dos consultas, dos reportes PDF con gráficos e inscripción/cancelación con actualización transaccional de cupos y bloqueo de la clase.
 3. Informe basado en la plantilla, presentación, capturas reales, guion y matriz de pendientes en el paquete de entrega.
-4. Perfil Azure, SQL específico, Bicep y workflow preparados. Publicación pendiente: la cuenta revisada no tiene una suscripción accesible.
+4. Azure for Students activo, App Service gratuito F1 y Azure SQL gratuito con AutoPause creados. JAR publicado con OneDeploy. Workflow con OIDC configurado para actualizar el despliegue.
 
 La versión compila con `mvn -B package '-Dmaven.test.skip=true'`. En este incremento no se ejecutó la suite de pruebas. Las evidencias documentan inicio local y exportación de PDF; el recorrido completo de los CRUD y las pruebas de concurrencia/rollback están pendientes.
 
@@ -57,8 +57,8 @@ EnrollmentService usa @Transactional y PESSIMISTIC_WRITE sobre la clase. Valida 
 
 ## Azure y entrega final
 
-Consultar `infra/GUIA_AZURE.md`. Ejecutar `sql/gymfitnessdb_azure.sql` sobre una Azure SQL Database ya creada. El perfil azure exige configuración externa y el workflow conserva el JAR, desplegando solo con los secretos necesarios. La plantilla Bicep propone recursos facturables; decidir región y presupuesto cuando exista una suscripción.
+Consultar `infra/GUIA_AZURE.md`. Ejecutar `sql/gymfitnessdb_azure.sql` sobre una Azure SQL Database ya creada. El perfil azure usa identidad administrada para SQL y contraseñas iniciales de aplicación externas. El workflow conserva el JAR y despliega con OIDC. Las plantillas proponen F1 y SQL con cuota gratuita y AutoPause.
 
-No hay URL pública ni despliegue acreditado. El incremento está preparado para revisión local; su publicación en GitHub y una ejecución remota del workflow son posteriores.
+URL creada: https://gym-fitness-jaguar009-20261003.azurewebsites.net. El paquete de actualización Azure conserva el resultado de despliegue, logs y capturas de la ejecución observada.
 
-Pendientes: validación funcional completa con ambos roles, concurrencia y rollback, despliegue real, grabación del demo de 3 a 5 minutos y confirmación de coordinación/aportes del equipo. Ver `REQUISITOS_CUMPLIMIENTO.md`.
+Pendientes: validación funcional completa con ambos roles, concurrencia y rollback, grabación del demo de 3 a 5 minutos y confirmación de coordinación/aportes del equipo. Ver `REQUISITOS_CUMPLIMIENTO.md`.

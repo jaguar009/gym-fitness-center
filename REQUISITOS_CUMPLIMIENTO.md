@@ -1,6 +1,6 @@
 # Requisitos y pendientes
 
-Estado del incremento del 03/10/2026.
+Estado de implementación y recursos del 04/10/2026. El paquete de entrega conserva el resultado de la ejecución remota y la observación del sistema.
 
 | Requisito | Implementación y evidencia | Estado |
 |---|---|---|
@@ -11,9 +11,9 @@ Estado del incremento del 03/10/2026.
 | Dos reportes | JasperReports con detalle, total y gráfico | Dos PDF exportados con SQL Server |
 | Transacción | Inscripción/cancelación más contador de cupos y bloqueo | Implementada; concurrencia y rollback pendientes de pruebas |
 | Eclipse | Configuración compartida local-windows y biblioteca Microsoft | Importación con cero errores e inicio observado |
-| GitHub | Repositorio público y rama local con este incremento | Publicación del incremento pendiente |
-| Actions | Compilación, artefacto JAR y despliegue condicionado | Workflow preparado; ejecución remota nueva pendiente |
-| Azure | Perfil, Bicep, guía y SQL específico | Pendiente suscripción, recursos, secretos y despliegue |
+| GitHub | Repositorio público y rama codex/gym-etapas-local | Incremento preparado para revisión |
+| Actions | Compilación, JAR y publicación con OIDC | Identidad y variables configuradas; consultar ejecución remota |
+| Azure | Azure for Students, App Service F1 y Azure SQL gratuito con AutoPause | Recursos y esquema creados; JAR publicado con OneDeploy |
 | Informe editable | Plantilla completa, APA, implementación y anexos | Incluido en el paquete |
 | Presentación y demo | PPTX y guion de 3 a 5 minutos | PPTX preparado; grabación pendiente |
 | Trabajo grupal | Cinco autores de la plantilla; roles propuestos | Confirmar coordinación y acreditar aportes reales |
